@@ -45,6 +45,6 @@ deploy:
     - cd dist
     - ls -al -F
     - cd ..
-    - aws s3 cp dist/* s3://myawsangulardeployment/angular/
+    - aws s3 cp dist/ s3://myawsangulardeployment/ --recursive
   only:
     - master
