@@ -45,6 +45,6 @@ deploy:
     - cd dist
     - ls -al -F
     - cd ..
-    - aws deploy push --application-name angular-gitlab-ci-cd-example --s3-location s3://myawsangulardeployment/angular/ --ignore-hidden-files --source dist
+    - aws s3 cp dist/* s3://myawsangulardeployment/angular/
   only:
     - master
