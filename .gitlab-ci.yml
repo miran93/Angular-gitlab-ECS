@@ -1,4 +1,4 @@
-image: node:10
+image: node:14.17.0
 
 stages:
   - build
@@ -24,27 +24,18 @@ build:
     paths:
       - dist/angular-gitlab-ci-cd-example/
   only:
-    - dev
-    - master
+    - main
 
 deploy:
-  stage: 'deploy'
-  environment:
-    name: production
+  stage: deploy
   script:
-    - apt update
-    - apt install -y software-properties-common
-    - apt install -y python-dev
-    - apt install -y python-pip
-    - pip install awscli
-    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-    - aws configure set region us-east-1
-    - ls -la -F
-    - mv dist/angular-gitlab-ci-cd-example/appspec.yml dist/
-    - cd dist
-    - ls -al -F
-    - cd ..
-    - aws s3 cp dist/ s3://myawsangulardeployment/ --recursive
+    - apt-get update -qq && apt-get install -y -qq python-pip
+    - pip install awsebcli
+    - echo "DEPLOYMENT_ENV=production" >> .env
+    - echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> .env
+    - echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> .env
+    - echo "AWS_REGION=<your-eb-region>" >> .env
+    - eb init -r us-east-1 -p Node.js 14 running on 64bit Amazon Linux 2/5.8.1 AngularEB-env
+    - eb deploy
   only:
-    - master
+    - main
