@@ -24,7 +24,7 @@ build:
     paths:
       - dist/angular-gitlab-ci-cd-example/
   only:
-    - main
+    - master
 
 deploy:
   stage: deploy
@@ -38,4 +38,4 @@ deploy:
     - eb init -r us-east-1 -p Node.js 14 running on 64bit Amazon Linux 2/5.8.1 AngularEB-env
     - eb deploy
   only:
-    - main
+    - master
