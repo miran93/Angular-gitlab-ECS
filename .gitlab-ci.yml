@@ -34,7 +34,7 @@ deploy:
     - echo "DEPLOYMENT_ENV=production" >> .env
     - echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> .env
     - echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> .env
-    - echo "AWS_REGION=<your-eb-region>" >> .env
+    - echo "AWS_REGION=us-east-1" >> .env
     - eb init -r us-east-1 -p Node.js 14 running on 64bit Amazon Linux 2/5.8.1 AngularEB-env
     - eb deploy
   only:
