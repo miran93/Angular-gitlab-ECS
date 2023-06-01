@@ -30,7 +30,6 @@ deploy:
   script:
     - apt-get update -qq && apt-get install -y -qq python3-pip
     - pip3 install --upgrade awscli
-    - $(aws ecr get-login --no-include-email --region us-east-1)
     - pip3 install --upgrade awsebcli
     - echo "DEPLOYMENT_ENV=production" >> .env
     - echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> .env
