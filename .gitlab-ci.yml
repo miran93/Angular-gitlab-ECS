@@ -28,11 +28,9 @@ deploy:
   stage: deploy
   script:
     - apt-get update -qq && apt-get install -y -qq python3-pip
-    - apt-get install -y -qq python3-dev
-    - python3 -m venv myenv
-    - source myenv/bin/activate
-    - pip install --upgrade pip
-    - pip install awsebcli
+    - pip3 install --upgrade awscli
+    - $(aws ecr get-login --no-include-email --region us-east-1)
+    - pip3 install --upgrade awsebcli
     - echo "DEPLOYMENT_ENV=production" >> .env
     - echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> .env
     - echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> .env
