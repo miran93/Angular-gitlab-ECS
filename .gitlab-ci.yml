@@ -5,6 +5,11 @@ stages:
   - package
   - deploy
 
+variables:
+  ECS_CLUSTER: "Angular-ecs"
+  ECS_SERVICE: "angular-ecs4"
+
+
 build:
   stage: build
   before_script:
