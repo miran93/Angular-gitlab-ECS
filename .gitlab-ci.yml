@@ -5,11 +5,10 @@ stages:
   - package
   - deploy
 
-before_script:
-  - npm ci
-
 build:
   stage: build
+  before_script:
+  - npm ci
   script:
     - npm run build
 
