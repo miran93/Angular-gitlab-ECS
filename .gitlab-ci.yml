@@ -1,41 +1,32 @@
-image: node:14.17.0
+image: node:14
 
 stages:
   - build
+  - package
   - deploy
 
+before_script:
+  - npm ci
+
 build:
-  stage: 'build'
+  stage: build
   script:
-    - npm install -y npm@6.11.0
-    - nodejs -v
-    - npm -v
-    - ls -la -F
-    - npm ci
-    - npx ng build --prod
-  cache:
-    paths:
-      - node_modules/
-  artifacts:
-    when: on_success
-    name: '$CI_JOB_NAME-$CI_COMMIT_REF_NAME'
-    paths:
-      - dist/angular-gitlab-ci-cd-example/
-  only:
-    - master
+    - npm run build
+
+package:
+  stage: package
+  script:
+    - apt-get update && apt-get install -y zip
+    - zip -r app.zip dist/*
 
 deploy:
   stage: deploy
-  image: python:latest
+  image: python:3.8
   script:
-    - apt-get update -qq && apt-get install -y -qq python3-pip
-    - pip3 install --upgrade awscli
-    - pip3 install --upgrade awsebcli
-    - echo "DEPLOYMENT_ENV=production" >> .env
-    - echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> .env
-    - echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> .env
-    - echo "AWS_REGION=us-east-1" >> .env
-    - eb init -r us-east-1 -p "Node.js 14" AngularEB
-    - eb deploy
-  only:
-    - master
+    - apt-get update && apt-get install -y zip
+    - pip install awscli
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set default.region $AWS_REGION
+    - aws s3 cp app.zip s3://bucket-ecs1/app.zip
+    - aws ecs update-service --cluster $ECS_CLUSTER --service $ECS_SERVICE --force-new-deployment
